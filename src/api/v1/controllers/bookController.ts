@@ -2,8 +2,6 @@ import { Request, Response } from "express";
 import * as svc from "../services/bookService";
 
 /**
- * Controller: list
- * ----------------
  * Retrieves all books from the system.
  * 
  * @param req - Express request object
@@ -15,8 +13,6 @@ export async function list(req: Request, res: Response) {
 }
 
 /**
- * Controller: getById
- * -------------------
  * Retrieves a single book by its ID.
  * 
  * @param req - Express request object containing book ID in params
@@ -30,8 +26,6 @@ export async function getById(req: Request, res: Response) {
 }
 
 /**
- * Controller: create
- * ------------------
  * Creates a new book record.
  * 
  * @param req - Express request object containing book data in body
@@ -44,8 +38,6 @@ export async function create(req: Request, res: Response) {
 }
 
 /**
- * Controller: update
- * ------------------
  * Updates an existing book by ID.
  * 
  * @param req - Express request object with book ID in params and new data in body
@@ -59,8 +51,6 @@ export async function update(req: Request, res: Response) {
 }
 
 /**
- * Controller: remove
- * ------------------
  * Deletes a book by ID.
  * 
  * @param req - Express request object with book ID in params

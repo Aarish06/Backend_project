@@ -2,8 +2,6 @@ import { Request, Response } from "express";
 import * as svc from "../services/borrowService";
 
 /**
- * Controller: list
- * ----------------
  * Retrieves all borrow records from the system.
  *
  * @param req - Express request object
@@ -15,8 +13,6 @@ export async function list(req: Request, res: Response) {
 }
 
 /**
- * Controller: getById
- * -------------------
  * Retrieves a specific borrow record by its ID.
  *
  * @param req - Express request object containing borrow ID in params
@@ -30,8 +26,6 @@ export async function getById(req: Request, res: Response) {
 }
 
 /**
- * Controller: create
- * ------------------
  * Creates a new borrow record.
  *
  * @param req - Express request object containing borrow data in body
@@ -44,8 +38,6 @@ export async function create(req: Request, res: Response) {
 }
 
 /**
- * Controller: update
- * ------------------
  * Updates an existing borrow record by ID.
  *
  * @param req - Express request object containing borrow ID in params and update data in body
@@ -59,8 +51,6 @@ export async function update(req: Request, res: Response) {
 }
 
 /**
- * Controller: remove
- * ------------------
  * Deletes a borrow record by ID.
  *
  * @param req - Express request object containing borrow ID in params

@@ -2,8 +2,6 @@ import { Request, Response } from "express";
 import * as svc from "../services/userService";
 
 /**
- * Controller: list
- * ----------------
  * Fetches all users from the system.
  *
  * @param req - Express request object
@@ -15,8 +13,6 @@ export async function list(req: Request, res: Response) {
 }
 
 /**
- * Controller: getById
- * -------------------
  * Retrieves a single user by their ID.
  *
  * @param req - Express request object containing user ID in params
@@ -30,8 +26,6 @@ export async function getById(req: Request, res: Response) {
 }
 
 /**
- * Controller: create
- * ------------------
  * Creates a new user record.
  *
  * @param req - Express request object containing new user data in body
@@ -44,8 +38,6 @@ export async function create(req: Request, res: Response) {
 }
 
 /**
- * Controller: update
- * ------------------
  * Updates an existing user record by ID.
  *
  * @param req - Express request object with user ID in params and updated data in body
@@ -59,8 +51,6 @@ export async function update(req: Request, res: Response) {
 }
 
 /**
- * Controller: remove
- * ------------------
  * Deletes a user record by ID.
  *
  * @param req - Express request object with user ID in params
