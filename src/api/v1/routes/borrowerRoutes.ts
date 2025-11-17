@@ -1,5 +1,6 @@
 import { Router } from "express";
 import * as c from "../controllers/borrowerController";
+import { borrowController } from "../controllers/borrowerController";
 const router = Router();
 
 /**
@@ -35,7 +36,7 @@ const router = Router();
  *               items:
  *                 $ref: '#/components/schemas/Borrower'
  */
-router.get("/", c.list);
+router.get("/", borrowController.list);
 
 /**
  * @openapi
@@ -60,7 +61,7 @@ router.get("/", c.list);
  *       '404':
  *         description: Borrower not found
  */
-router.get("/:id", c.getById);
+router.get("/:id", borrowController.getById);
 
 /**
  * @openapi
@@ -104,7 +105,7 @@ router.get("/:id", c.getById);
  *       '409':
  *         description: Borrower with this email already exists
  */
-router.post("/", c.create);
+router.post("/", borrowController.create);
 
 /**
  * @openapi
@@ -135,7 +136,7 @@ router.post("/", c.create);
  *       '404':
  *         description: Borrower not found
  */
-router.put("/:id", c.update);
+router.put("/:id", borrowController.update);
 
 /**
  * @openapi
@@ -156,6 +157,6 @@ router.put("/:id", c.update);
  *       '404':
  *         description: Borrower not found
  */
-router.delete("/:id", c.remove);
+router.delete("/:id", borrowController.remove);
 
 export default router;

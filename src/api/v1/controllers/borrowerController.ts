@@ -1,64 +1,99 @@
 import { Request, Response } from "express";
-import * as svc from "../services/borrowService";
+import { HTTP_STATUS } from "../constants/httpConstants";
+import { borrowService } from "../services/borrowService";
 
-/**
- * Retrieves all borrow records from the system.
- *
- * @param req - Express request object
- * @param res - Express response object
- * @returns JSON response containing an array of borrow records
- */
-export async function list(req: Request, res: Response) {
-  res.json({ borrows: await svc.list() });
-}
+export const borrowController = {
+  // GET /borrows
+  list: async (_req: Request, res: Response) => {
+    const borrows = await borrowService.list();
+    return res
+      .status(HTTP_STATUS.OK)
+      .json({ status: "success", data: borrows });
+  },
 
-/**
- * Retrieves a specific borrow record by its ID.
- *
- * @param req - Express request object containing borrow ID in params
- * @param res - Express response object
- * @returns JSON response with the borrow record if found, otherwise 404 error
- */
-export async function getById(req: Request, res: Response) {
-  const item = await svc.get(req.params.id);
-  if (!item) return res.status(404).json({ message: "Borrow not found" });
-  res.json(item);
-}
+  // GET /borrows/:id
+  getById: async (req: Request, res: Response) => {
+    const { id } = req.params;
 
-/**
- * Creates a new borrow record.
- *
- * @param req - Express request object containing borrow data in body
- * @param res - Express response object
- * @returns JSON response with the created borrow record and HTTP 201 status
- */
-export async function create(req: Request, res: Response) {
-  const created = await svc.create(req.body);
-  res.status(201).json(created);
-}
+    if (!id) {
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .json({ status: "error", message: "Invalid ID" });
+    }
 
-/**
- * Updates an existing borrow record by ID.
- *
- * @param req - Express request object containing borrow ID in params and update data in body
- * @param res - Express response object
- * @returns JSON response with updated borrow data or 404 if not found
- */
-export async function update(req: Request, res: Response) {
-  const updated = await svc.update(req.params.id, req.body);
-  if (!updated) return res.status(404).json({ message: "Borrow not found" });
-  res.json(updated);
-}
+    const borrow = await borrowService.getById(id);
 
-/**
- * Deletes a borrow record by ID.
- *
- * @param req - Express request object containing borrow ID in params
- * @param res - Express response object
- * @returns HTTP 204 on successful deletion or 404 if record not found
- */
-export async function remove(req: Request, res: Response) {
-  const ok = await svc.remove(req.params.id);
-  if (!ok) return res.status(404).json({ message: "Borrow not found" });
-  res.status(204).send();
-}
+    return borrow
+      ? res.status(HTTP_STATUS.OK).json({ status: "success", data: borrow })
+      : res
+          .status(HTTP_STATUS.NOT_FOUND)
+          .json({ status: "error", message: "Borrow record not found" });
+  },
+
+  // POST /borrows
+  create: async (req: Request, res: Response) => {
+    const body = req.body || {};
+    const { bookId, userId, status } = body;
+
+    if (!bookId || !userId) {
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .json({ status: "error", message: "Missing required fields" });
+    }
+
+    const borrow = await borrowService.create({
+      bookId,
+      userId,
+      status,
+      borrowedAt: "",
+      dueAt: ""
+    });
+
+    return res
+      .status(HTTP_STATUS.CREATED)
+      .json({ status: "success", data: borrow });
+  },
+
+  // PUT /borrows/:id
+  update: async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    if (!id) {
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .json({ status: "error", message: "Invalid ID" });
+    }
+
+    const updated = await borrowService.update(id, req.body);
+
+    return updated
+      ? res.status(HTTP_STATUS.OK).json({ status: "success", data: updated })
+      : res
+          .status(HTTP_STATUS.NOT_FOUND)
+          .json({ status: "error", message: "Borrow record not found" });
+  },
+
+  // DELETE /borrows/:id
+  remove: async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    if (!id) {
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .json({ status: "error", message: "Invalid ID" });
+    }
+
+    const success = await borrowService.remove(id);
+
+    return success
+      ? res
+          .status(HTTP_STATUS.OK)
+          .json({
+            status: "success",
+            message: "Borrow record deleted successfully",
+          })
+      : res
+          .status(HTTP_STATUS.NOT_FOUND)
+          .json({ status: "error", message: "Borrow record not found" });
+  },
+};
