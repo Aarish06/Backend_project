@@ -1,33 +1,80 @@
-import { db } from "../../../../config/firebaseConfig";
+import { Book } from "../models/types";
+import {
+  createDocument,
+  getDocuments,
+  getDocumentById,
+  updateDocument,
+  deleteDocument,
+} from "../repositories/firestoreRepository";
 
-const col = () => db.collection("books");
+const COLLECTION = "books";
 
-export async function list() {
-  const s = await col().get();
-  return s.docs.map(d => ({ id: d.id, ...d.data() }));
-}
-export async function get(id: string) {
-  const d = await col().doc(id).get();
-  return d.exists ? { id: d.id, ...d.data() } : null;
-}
-export async function create(data: { title: string; author: string; availableCopies?: number }) {
-  const payload = { availableCopies: 1, ...data };
-  const ref = await col().add(payload);
-  const doc = await ref.get();
-  return { id: doc.id, ...doc.data() };
-}
-export async function update(id: string, data: Partial<{ title: string; author: string; availableCopies: number }>) {
-  const ref = col().doc(id);
-  const doc = await ref.get();
-  if (!doc.exists) return null;
-  await ref.update(data);
-  const out = await ref.get();
-  return { id: out.id, ...out.data() };
-}
-export async function remove(id: string) {
-  const ref = col().doc(id);
-  const doc = await ref.get();
-  if (!doc.exists) return false;
-  await ref.delete();
-  return true;
-}
+type BookData = Omit<Book, "id">;
+type BookWithId = Book;
+
+export const bookService = {
+  // Get all books
+  list: async (): Promise<BookWithId[]> => {
+    const snapshot = await getDocuments(COLLECTION);
+    return snapshot.docs.map(doc => {
+      const data = doc.data() as BookData;
+      return { id: doc.id, ...data };
+    });
+  },
+
+  // Get a single book by Firestore document ID (string)
+  getById: async (id: string): Promise<BookWithId | null> => {
+    const doc = await getDocumentById(COLLECTION, id);
+    if (!doc) return null;
+
+    const data = doc.data() as BookData;
+    return { id: doc.id, ...data };
+  },
+
+// services/bookService.ts
+create: async (data: BookData): Promise<BookWithId> => {
+  const payload: BookData = {
+    ...data, // spread first
+    availableCopies:
+      typeof data.availableCopies === "number"
+        ? data.availableCopies
+        : 1,   // override with a guaranteed number
+  };
+
+  const id = await createDocument<BookData>(COLLECTION, payload);
+  const doc = await getDocumentById(COLLECTION, id);
+
+  if (!doc) {
+    throw new Error("Failed to retrieve created book");
+  }
+
+  const createdData = doc.data() as BookData;
+  return { id: doc.id, ...createdData };
+},
+
+  // Update an existing book by Firestore document ID
+  update: async (
+    id: string,
+    data: Partial<BookData>
+  ): Promise<BookWithId | null> => {
+    const existing = await getDocumentById(COLLECTION, id);
+    if (!existing) return null;
+
+    await updateDocument<BookData>(COLLECTION, id, data);
+
+    const updated = await getDocumentById(COLLECTION, id);
+    if (!updated) return null;
+
+    const updatedData = updated.data() as BookData;
+    return { id: updated.id, ...updatedData };
+  },
+
+  // Delete a book by Firestore document ID
+  remove: async (id: string): Promise<boolean> => {
+    const existing = await getDocumentById(COLLECTION, id);
+    if (!existing) return false;
+
+    await deleteDocument(COLLECTION, id);
+    return true;
+  },
+};

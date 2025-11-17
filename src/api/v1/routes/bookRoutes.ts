@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as c from "../controllers/bookController";
+import { bookController } from "../controllers/bookController";
 const router = Router();
 
 /**
@@ -34,7 +34,7 @@ const router = Router();
  *               items:
  *                 $ref: '#/components/schemas/Book'
  */
-router.get("/", c.list);
+router.get("/", bookController.list);
 
 /**
  * @openapi
@@ -59,7 +59,7 @@ router.get("/", c.list);
  *       '404':
  *         description: Book not found
  */
-router.get("/:id", c.getById);
+router.get("/:id", bookController.getById);
 
 /**
  * @openapi
@@ -99,7 +99,7 @@ router.get("/:id", c.getById);
  *       '400':
  *         description: Invalid input data
  */
-router.post("/", c.create);
+router.post("/", bookController.create);
 
 /**
  * @openapi
@@ -130,7 +130,7 @@ router.post("/", c.create);
  *       '404':
  *         description: Book not found
  */
-router.put("/:id", c.update);
+router.put("/:id", bookController.update);
 
 /**
  * @openapi
@@ -151,6 +151,6 @@ router.put("/:id", c.update);
  *       '404':
  *         description: Book not found
  */
-router.delete("/:id", c.remove);
+router.delete("/:id", bookController.remove);
 
 export default router;

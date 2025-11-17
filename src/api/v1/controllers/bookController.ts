@@ -1,64 +1,99 @@
 import { Request, Response } from "express";
-import * as svc from "../services/bookService";
+import { HTTP_STATUS } from "../constants/httpConstants";
+import { bookService } from "../services/bookService";
 
-/**
- * Retrieves all books from the system.
- * 
- * @param req - Express request object
- * @param res - Express response object
- * @returns JSON response containing an array of all books
- */
-export async function list(req: Request, res: Response) {
-  res.json({ books: await svc.list() });
-}
+export const bookController = {
+  // GET /books
+  list: async (_req: Request, res: Response) => {
+    const books = await bookService.list();
+    return res
+      .status(HTTP_STATUS.OK)
+      .json({ status: "success", data: books });
+  },
 
-/**
- * Retrieves a single book by its ID.
- * 
- * @param req - Express request object containing book ID in params
- * @param res - Express response object
- * @returns JSON response with the book if found, else 404 error
- */
-export async function getById(req: Request, res: Response) {
-  const item = await svc.get(req.params.id);
-  if (!item) return res.status(404).json({ message: "Book not found" });
-  res.json(item);
-}
+  // GET /books/:id
+  getById: async (req: Request, res: Response) => {
+    const { id } = req.params;
 
-/**
- * Creates a new book record.
- * 
- * @param req - Express request object containing book data in body
- * @param res - Express response object
- * @returns JSON response with the created book and HTTP 201 status
- */
-export async function create(req: Request, res: Response) {
-  const created = await svc.create(req.body);
-  res.status(201).json(created);
-}
+    if (!id) {
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .json({ status: "error", message: "Invalid ID" });
+    }
 
-/**
- * Updates an existing book by ID.
- * 
- * @param req - Express request object with book ID in params and new data in body
- * @param res - Express response object
- * @returns JSON response with updated book data or 404 if not found
- */
-export async function update(req: Request, res: Response) {
-  const updated = await svc.update(req.params.id, req.body);
-  if (!updated) return res.status(404).json({ message: "Book not found" });
-  res.json(updated);
-}
+    const book = await bookService.getById(id);
 
-/**
- * Deletes a book by ID.
- * 
- * @param req - Express request object with book ID in params
- * @param res - Express response object
- * @returns HTTP 204 on success or 404 if not found
- */
-export async function remove(req: Request, res: Response) {
-  const ok = await svc.remove(req.params.id);
-  if (!ok) return res.status(404).json({ message: "Book not found" });
-  res.status(204).send();
-}
+    return book
+      ? res.status(HTTP_STATUS.OK).json({ status: "success", data: book })
+      : res
+          .status(HTTP_STATUS.NOT_FOUND)
+          .json({ status: "error", message: "Book not found" });
+  },
+
+  // POST /books
+  create: async (req: Request, res: Response) => {
+    const body = req.body || {};
+
+    const { title, author, availableCopies } = body;
+
+    if (!title || !author) {
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .json({ status: "error", message: "Missing required fields" });
+    }
+
+    const book = await bookService.create({
+      title,
+      author,
+      availableCopies,
+    });
+
+    return res
+      .status(HTTP_STATUS.CREATED)
+      .json({ status: "success", data: book });
+  },
+
+
+  // PUT /books/:id
+  update: async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    if (!id) {
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .json({ status: "error", message: "Invalid ID" });
+    }
+
+    const updated = await bookService.update(id, req.body);
+
+    return updated
+      ? res.status(HTTP_STATUS.OK).json({ status: "success", data: updated })
+      : res
+          .status(HTTP_STATUS.NOT_FOUND)
+          .json({ status: "error", message: "Book not found" });
+  },
+
+  // DELETE /books/:id
+  remove: async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    if (!id) {
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .json({ status: "error", message: "Invalid ID" });
+    }
+
+    const success = await bookService.remove(id);
+
+    return success
+      ? res
+          .status(HTTP_STATUS.OK)
+          .json({
+            status: "success",
+            message: "Book deleted successfully",
+          })
+      : res
+          .status(HTTP_STATUS.NOT_FOUND)
+          .json({ status: "error", message: "Book not found" });
+  },
+};
