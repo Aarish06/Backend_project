@@ -1,5 +1,6 @@
 import { Router } from "express";
 import * as c from "../controllers/userController";
+import { userController } from "../controllers/userController";
 const router = Router();
 
 /**
@@ -35,7 +36,7 @@ const router = Router();
  *               items:
  *                 $ref: '#/components/schemas/User'
  */
-router.get("/", c.list);
+router.get("/", userController.list);
 
 /**
  * @openapi
@@ -60,7 +61,7 @@ router.get("/", c.list);
  *       '404':
  *         description: User not found
  */
-router.get("/:id", c.getById);
+router.get("/:id", userController.getById);
 
 /**
  * @openapi
@@ -106,7 +107,7 @@ router.get("/:id", c.getById);
  *       '409':
  *         description: User with this email already exists
  */
-router.post("/", c.create);
+router.post("/", userController.create)
 
 /**
  * @openapi
@@ -137,7 +138,7 @@ router.post("/", c.create);
  *       '404':
  *         description: User not found
  */
-router.put("/:id", c.update);
+router.put("/:id", userController.update);
 
 /**
  * @openapi
@@ -158,6 +159,6 @@ router.put("/:id", c.update);
  *       '404':
  *         description: User not found
  */
-router.delete("/:id", c.remove);
+router.delete("/:id", userController.remove);
 
 export default router;

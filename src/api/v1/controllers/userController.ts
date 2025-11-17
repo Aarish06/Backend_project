@@ -1,64 +1,89 @@
 import { Request, Response } from "express";
-import * as svc from "../services/userService";
+import { HTTP_STATUS } from "../constants/httpConstants";
+import { userService } from "../services/userService";
 
-/**
- * Fetches all users from the system.
- *
- * @param req - Express request object
- * @param res - Express response object
- * @returns JSON response containing an array of all users
- */
-export async function list(req: Request, res: Response) {
-  res.json({ users: await svc.list() });
-}
+export const userController = {
+  // GET /users
+  list: async (_req: Request, res: Response) => {
+    const users = await userService.list();
+    return res.status(HTTP_STATUS.OK).json({ status: "success", data: users });
+  },
 
-/**
- * Retrieves a single user by their ID.
- *
- * @param req - Express request object containing user ID in params
- * @param res - Express response object
- * @returns JSON response with the user data if found, else 404 error
- */
-export async function getById(req: Request, res: Response) {
-  const item = await svc.get(req.params.id);
-  if (!item) return res.status(404).json({ message: "User not found" });
-  res.json(item);
-}
+  // GET /users/:id
+  getById: async (req: Request, res: Response) => {
+    const { id } = req.params;
 
-/**
- * Creates a new user record.
- *
- * @param req - Express request object containing new user data in body
- * @param res - Express response object
- * @returns JSON response with the created user and HTTP 201 status
- */
-export async function create(req: Request, res: Response) {
-  const created = await svc.create(req.body);
-  res.status(201).json(created);
-}
+    if (!id) {
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .json({ status: "error", message: "Invalid ID" });
+    }
 
-/**
- * Updates an existing user record by ID.
- *
- * @param req - Express request object with user ID in params and updated data in body
- * @param res - Express response object
- * @returns JSON response with updated user data or 404 if user not found
- */
-export async function update(req: Request, res: Response) {
-  const updated = await svc.update(req.params.id, req.body);
-  if (!updated) return res.status(404).json({ message: "User not found" });
-  res.json(updated);
-}
+    const user = await userService.getById(id);
 
-/**
- * Deletes a user record by ID.
- *
- * @param req - Express request object with user ID in params
- * @param res - Express response object
- * @returns HTTP 204 status on successful deletion or 404 if user not found
- */
-export async function remove(req: Request, res: Response) {
-  const ok = await svc.remove(req.params.id);
-  if (!ok) return res.status(404).json({ message: "User not found" });
-  res.status(204).send();
-}
+    return user
+      ? res.status(HTTP_STATUS.OK).json({ status: "success", data: user })
+      : res
+          .status(HTTP_STATUS.NOT_FOUND)
+          .json({ status: "error", message: "User not found" });
+  },
+
+  // POST /users
+  create: async (req: Request, res: Response) => {
+    const { email, displayName, role } = req.body;
+
+    if (!email || !displayName) {
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
+        status: "error",
+        message: "Missing required fields",
+      });
+    }
+
+    const user = await userService.create({ email, displayName, role });
+
+    return res
+      .status(HTTP_STATUS.CREATED)
+      .json({ status: "success", data: user });
+  },
+
+  // PUT /users/:id
+  update: async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    if (!id) {
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .json({ status: "error", message: "Invalid ID" });
+    }
+
+    const updated = await userService.update(id, req.body);
+
+    return updated
+      ? res.status(HTTP_STATUS.OK).json({ status: "success", data: updated })
+      : res
+          .status(HTTP_STATUS.NOT_FOUND)
+          .json({ status: "error", message: "User not found" });
+  },
+
+  // DELETE /users/:id
+  remove: async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    if (!id) {
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .json({ status: "error", message: "Invalid ID" });
+    }
+
+    const success = await userService.remove(id);
+
+    return success
+      ? res.status(HTTP_STATUS.OK).json({
+          status: "success",
+          message: "User deleted successfully",
+        })
+      : res
+          .status(HTTP_STATUS.NOT_FOUND)
+          .json({ status: "error", message: "User not found" });
+  },
+};
