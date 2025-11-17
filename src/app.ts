@@ -12,9 +12,10 @@ app.get("/", (req, res) => {
     res.send("Hello, World!");
 });
 
-app.use("/books", bookRoutes);
-app.use("/users", userRoutes);
-app.use("/borrows", borrowRoutes);
+app.use(express.json())
+app.use("/api/v1/books", bookRoutes);
+app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/borrows", borrowRoutes);
 
 setupSwagger(app);
 
