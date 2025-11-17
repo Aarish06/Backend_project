@@ -1,6 +1,7 @@
 import { Router } from "express";
 import * as c from "../controllers/borrowerController";
 import { borrowController } from "../controllers/borrowerController";
+import { limiter } from "../middleware/rateLimiter";
 const router = Router();
 
 /**
@@ -105,7 +106,7 @@ router.get("/:id", borrowController.getById);
  *       '409':
  *         description: Borrower with this email already exists
  */
-router.post("/", borrowController.create);
+router.post("/", limiter,borrowController.create);
 
 /**
  * @openapi

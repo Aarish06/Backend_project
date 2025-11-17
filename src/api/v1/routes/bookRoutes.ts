@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { bookController } from "../controllers/bookController";
+import { limiter } from "../middleware/rateLimiter";
 const router = Router();
 
 /**
@@ -99,7 +100,7 @@ router.get("/:id", bookController.getById);
  *       '400':
  *         description: Invalid input data
  */
-router.post("/", bookController.create);
+router.post("/", limiter, bookController.create);
 
 /**
  * @openapi

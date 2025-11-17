@@ -1,6 +1,7 @@
 import { Router } from "express";
 import * as c from "../controllers/userController";
 import { userController } from "../controllers/userController";
+import { limiter } from "../middleware/rateLimiter";
 const router = Router();
 
 /**
@@ -107,7 +108,7 @@ router.get("/:id", userController.getById);
  *       '409':
  *         description: User with this email already exists
  */
-router.post("/", userController.create)
+router.post("/", limiter ,userController.create)
 
 /**
  * @openapi
