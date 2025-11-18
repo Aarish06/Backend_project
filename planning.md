@@ -122,3 +122,11 @@ Create issues for each feature/task tagged to milestones:
 - Books with active borrows cannot be deleted
 
 ---
+
+## What is planned for Milestone 3
+
+- Add advanced features such as filtering, sorting, and improved data validation.
+- Implement secure authentication and role-based authorization for protected routes.
+- Update and complete all API documentation using Swagger/OpenAPI.
+- Clean, organize, and polish the entire project structure for clarity and easy navigation.
+- Add and run tests to ensure all critical features work correctly and reliably.
