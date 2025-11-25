@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { bookController } from "../controllers/bookController";
 import { limiter } from "../middleware/rateLimiter";
+import authenticate from "../middleware/authenticate";
 const router = Router();
 
 /**
@@ -100,7 +101,7 @@ router.get("/:id", bookController.getById);
  *       '400':
  *         description: Invalid input data
  */
-router.post("/", limiter, bookController.create);
+router.post("/", authenticate,limiter, bookController.create);
 
 /**
  * @openapi
@@ -131,7 +132,7 @@ router.post("/", limiter, bookController.create);
  *       '404':
  *         description: Book not found
  */
-router.put("/:id", bookController.update);
+router.put("/:id",authenticate, bookController.update);
 
 /**
  * @openapi
@@ -152,6 +153,6 @@ router.put("/:id", bookController.update);
  *       '404':
  *         description: Book not found
  */
-router.delete("/:id", bookController.remove);
+router.delete("/:id",authenticate, bookController.remove);
 
 export default router;

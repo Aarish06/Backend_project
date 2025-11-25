@@ -2,6 +2,7 @@ import { Router } from "express";
 import * as c from "../controllers/borrowerController";
 import { borrowController } from "../controllers/borrowerController";
 import { limiter } from "../middleware/rateLimiter";
+import authenticate from "../middleware/authenticate";
 const router = Router();
 
 /**
@@ -137,7 +138,7 @@ router.post("/", limiter,borrowController.create);
  *       '404':
  *         description: Borrower not found
  */
-router.put("/:id", borrowController.update);
+router.put("/:id", authenticate,borrowController.update);
 
 /**
  * @openapi
@@ -158,6 +159,6 @@ router.put("/:id", borrowController.update);
  *       '404':
  *         description: Borrower not found
  */
-router.delete("/:id", borrowController.remove);
+router.delete("/:id", authenticate,borrowController.remove);
 
 export default router;

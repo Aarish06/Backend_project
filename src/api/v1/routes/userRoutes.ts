@@ -2,6 +2,7 @@ import { Router } from "express";
 import * as c from "../controllers/userController";
 import { userController } from "../controllers/userController";
 import { limiter } from "../middleware/rateLimiter";
+import authenticate from "../middleware/authenticate";
 const router = Router();
 
 /**
@@ -160,6 +161,6 @@ router.put("/:id", userController.update);
  *       '404':
  *         description: User not found
  */
-router.delete("/:id", userController.remove);
+router.delete("/:id", authenticate,userController.remove);
 
 export default router;
