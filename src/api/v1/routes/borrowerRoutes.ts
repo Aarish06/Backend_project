@@ -3,6 +3,7 @@ import * as c from "../controllers/borrowerController";
 import { borrowController } from "../controllers/borrowerController";
 import { limiter } from "../middleware/rateLimiter";
 import authenticate from "../middleware/authenticate";
+import isAuthorized from "../middleware/authorize";
 const router = Router();
 
 /**
@@ -159,6 +160,6 @@ router.put("/:id", authenticate,borrowController.update);
  *       '404':
  *         description: Borrower not found
  */
-router.delete("/:id", authenticate,borrowController.remove);
+router.delete("/:id", authenticate,isAuthorized({ hasRole: ["admin", "manager"] }),borrowController.remove);
 
 export default router;

@@ -2,6 +2,7 @@ import { Router } from "express";
 import { bookController } from "../controllers/bookController";
 import { limiter } from "../middleware/rateLimiter";
 import authenticate from "../middleware/authenticate";
+import isAuthorized from "../middleware/authorize";
 const router = Router();
 
 /**
@@ -101,7 +102,7 @@ router.get("/:id", bookController.getById);
  *       '400':
  *         description: Invalid input data
  */
-router.post("/", authenticate,limiter, bookController.create);
+router.post("/", authenticate,limiter,isAuthorized({ hasRole: ["admin"] }), bookController.create);
 
 /**
  * @openapi
@@ -153,6 +154,6 @@ router.put("/:id",authenticate, bookController.update);
  *       '404':
  *         description: Book not found
  */
-router.delete("/:id",authenticate, bookController.remove);
+router.delete("/:id",authenticate, isAuthorized({ hasRole: ["admin", "manager"] }), bookController.remove);
 
 export default router;

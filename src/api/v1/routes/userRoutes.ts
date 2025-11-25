@@ -3,6 +3,7 @@ import * as c from "../controllers/userController";
 import { userController } from "../controllers/userController";
 import { limiter } from "../middleware/rateLimiter";
 import authenticate from "../middleware/authenticate";
+import isAuthorized from "../middleware/authorize";
 const router = Router();
 
 /**
@@ -109,7 +110,7 @@ router.get("/:id", userController.getById);
  *       '409':
  *         description: User with this email already exists
  */
-router.post("/", limiter ,userController.create)
+router.post("/", limiter ,isAuthorized({ hasRole: ["user"] }),userController.create)
 
 /**
  * @openapi
