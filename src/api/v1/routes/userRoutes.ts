@@ -37,7 +37,7 @@ const router = Router();
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/User'
+ *                 type: object
  */
 router.get("/", userController.list);
 
@@ -60,7 +60,7 @@ router.get("/", userController.list);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/User'
+ *               type: object
  *       '404':
  *         description: User not found
  */
@@ -104,7 +104,7 @@ router.get("/:id", userController.getById);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/User'
+ *               type: object
  *       '400':
  *         description: Invalid input data
  *       '409':
@@ -130,14 +130,14 @@ router.post("/", limiter ,isAuthorized({ hasRole: ["user"] }),userController.cre
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/User'
+ *             type: object
  *     responses:
  *       '200':
  *         description: User updated successfully
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/User'
+ *               type: object
  *       '404':
  *         description: User not found
  */

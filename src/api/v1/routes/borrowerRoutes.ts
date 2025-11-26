@@ -37,7 +37,7 @@ const router = Router();
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Borrower'
+ *                 type: object
  */
 router.get("/", borrowController.list);
 
@@ -60,7 +60,7 @@ router.get("/", borrowController.list);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Borrower'
+ *               type: object
  *       '404':
  *         description: Borrower not found
  */
@@ -102,7 +102,7 @@ router.get("/:id", borrowController.getById);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Borrower'
+ *               type: object
  *       '400':
  *         description: Invalid input data
  *       '409':
@@ -128,14 +128,14 @@ router.post("/", limiter,borrowController.create);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Borrower'
+ *             type: object
  *     responses:
  *       '200':
  *         description: Borrower updated successfully
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Borrower'
+ *               type: object
  *       '404':
  *         description: Borrower not found
  */

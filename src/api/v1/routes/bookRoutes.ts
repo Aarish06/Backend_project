@@ -35,7 +35,7 @@ const router = Router();
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Book'
+ *                 type: object
  */
 router.get("/", bookController.list);
 
@@ -58,7 +58,7 @@ router.get("/", bookController.list);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Book'
+ *               type: object
  *       '404':
  *         description: Book not found
  */
@@ -98,7 +98,7 @@ router.get("/:id", bookController.getById);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Book'
+ *               type: object
  *       '400':
  *         description: Invalid input data
  */
@@ -122,14 +122,14 @@ router.post("/", authenticate,limiter,isAuthorized({ hasRole: ["admin"] }), book
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Book'
+ *             type: object
  *     responses:
  *       '200':
  *         description: Book updated successfully
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Book'
+ *               type: object
  *       '404':
  *         description: Book not found
  */
