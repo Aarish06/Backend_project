@@ -4,6 +4,7 @@ import userRoutes from "../src/api/v1/routes/userRoutes";
 import borrowRoutes from "../src/api/v1/routes/borrowerRoutes";
 import setupSwagger from "../config/swagger";
 import { limiter } from "./api/v1/middleware/rateLimiter";
+import adminRoutes from "./api/v1/routes/adminRoutes";
 // Initialize Express application
 const app: Express = express();
 
@@ -16,6 +17,7 @@ app.use(express.json())
 app.use("/api/v1/books", bookRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/borrows", borrowRoutes);
+app.use("/api/v1/admin", adminRoutes);
 // Apply the rate limiting middleware to all requests.
 app.use(limiter)
 setupSwagger(app);

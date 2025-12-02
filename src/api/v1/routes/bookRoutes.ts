@@ -37,7 +37,7 @@ const router = Router();
  *               items:
  *                 type: object
  */
-router.get("/", bookController.list);
+router.get("/",authenticate, bookController.list);
 
 /**
  * @openapi
@@ -62,7 +62,7 @@ router.get("/", bookController.list);
  *       '404':
  *         description: Book not found
  */
-router.get("/:id", bookController.getById);
+router.get("/:id",authenticate, bookController.getById);
 
 /**
  * @openapi
@@ -102,7 +102,7 @@ router.get("/:id", bookController.getById);
  *       '400':
  *         description: Invalid input data
  */
-router.post("/", authenticate,limiter,isAuthorized({ hasRole: ["admin"] }), bookController.create);
+router.post("/", authenticate,limiter,isAuthorized({ hasRole: ["ADMIN"] }), bookController.create);
 
 /**
  * @openapi
@@ -154,6 +154,6 @@ router.put("/:id",authenticate, bookController.update);
  *       '404':
  *         description: Book not found
  */
-router.delete("/:id",authenticate, isAuthorized({ hasRole: ["admin", "manager"] }), bookController.remove);
+router.delete("/:id",authenticate, isAuthorized({ hasRole: ["ADMIN", "LIBRARIAN"] }), bookController.remove);
 
 export default router;

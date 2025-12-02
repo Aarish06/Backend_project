@@ -160,6 +160,6 @@ router.put("/:id", authenticate,borrowController.update);
  *       '404':
  *         description: Borrower not found
  */
-router.delete("/:id", authenticate,isAuthorized({ hasRole: ["admin", "manager"] }),borrowController.remove);
+router.delete("/:id", authenticate,isAuthorized({ hasRole: ["ADMIN", "LIBRARIAN"] }),borrowController.remove);
 
 export default router;

@@ -1,5 +1,4 @@
 import { Router } from "express";
-import * as c from "../controllers/userController";
 import { userController } from "../controllers/userController";
 import { limiter } from "../middleware/rateLimiter";
 import authenticate from "../middleware/authenticate";
@@ -39,7 +38,7 @@ const router = Router();
  *               items:
  *                 type: object
  */
-router.get("/", userController.list);
+router.get("/", authenticate,  isAuthorized({ hasRole: ["ADMIN","LIBRARIAN"] }),userController.list);
 
 /**
  * @openapi
@@ -64,7 +63,7 @@ router.get("/", userController.list);
  *       '404':
  *         description: User not found
  */
-router.get("/:id", userController.getById);
+router.get("/:id", authenticate,  isAuthorized({ hasRole: ["ADMIN","LIBRARIAN"] }),userController.getById);
 
 /**
  * @openapi
@@ -110,7 +109,7 @@ router.get("/:id", userController.getById);
  *       '409':
  *         description: User with this email already exists
  */
-router.post("/", limiter ,isAuthorized({ hasRole: ["user"] }),userController.create)
+router.post("/", limiter,authenticate ,userController.create)
 
 /**
  * @openapi
@@ -141,7 +140,7 @@ router.post("/", limiter ,isAuthorized({ hasRole: ["user"] }),userController.cre
  *       '404':
  *         description: User not found
  */
-router.put("/:id", userController.update);
+router.put("/:id", authenticate,userController.update);
 
 /**
  * @openapi
@@ -162,6 +161,6 @@ router.put("/:id", userController.update);
  *       '404':
  *         description: User not found
  */
-router.delete("/:id", authenticate,userController.remove);
+router.delete("/:id", authenticate,  isAuthorized({ hasRole: ["ADMIN","LIBRARIAN","MEMBER"] }),userController.remove);
 
 export default router;
