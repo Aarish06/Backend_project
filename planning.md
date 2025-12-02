@@ -130,3 +130,21 @@ Create issues for each feature/task tagged to milestones:
 - Update and complete all API documentation using Swagger/OpenAPI.
 - Clean, organize, and polish the entire project structure for clarity and easy navigation.
 - Add and run tests to ensure all critical features work correctly and reliably.
+
+---
+
+## Challenges
+
+- The main Challenges i faced were with the postman. I often got confused on which api to send.
+I did not know much about postman and Firebase(in the starting) and where to connect files.
+
+## Solutions
+
+- I learnt the more about postman and firebase, not on how they work, but what they are
+
+## Outcome
+
+- Learnt on API system
+- How to run it on the github
+- Learnt about github workflows
+- Key generation of firebase
